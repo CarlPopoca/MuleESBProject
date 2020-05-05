@@ -1,0 +1,6 @@
+[submodule "MockServiceSOAPUI"]
+	path = MockServiceSOAPUI
+	url = https://github.com/CarlPopoca/MockServiceSOAPUI.git
+[submodule "webserviceexample"]
+	path = webserviceexample
+	url = https://github.com/CarlPopoca/webserviceexample.git
