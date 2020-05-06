@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="monto" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#d0443e2d-9c89-4da3-94a9-8559d543d70e">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="monto"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#05f16a5c-8350-4794-933e-7fc68559a96a">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="monto"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#7818c0e3-153c-49f9-8ca9-02421e71cf78">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="monto"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

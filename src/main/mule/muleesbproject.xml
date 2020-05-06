@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a4466de3-af95-4de4-98c1-c34994eb0640" basePath="mypath">
 		<http:listener-connection host="localhost" port="8065" />
 	</http:listener-config>
@@ -15,7 +16,7 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 		</wsc:connection>
 	</wsc:config>
 	<wsc:config name="Web_Service_Consumer_Config1" doc:name="Web Service Consumer Config" doc:id="facae9c0-07b1-4f25-843a-17e6fe995329" >
-		<wsc:connection wsdlLocation="http://localhost:8069/mockpaqueteImplPortBinding?wsdl" service="paqueteImplService" port="paqueteImplPort" address="http://localhost:8069/mockpaqueteImplPortBinding" />
+		<wsc:connection wsdlLocation="http://localhost:8069/mockpaqueteImplPortBinding?wsdl" service="paqueteImplService" port="paqueteImplPort" address="http://localhost:8069/mockpaqueteImplPortBinding" soapVersion="SOAP12"/>
 	</wsc:config>
 	<flow name="muleesbprojectFlow1" doc:id="c7577b11-c62a-4dd4-8360-bbc2aa04f129" >
 		<http:listener doc:name="HTTP" doc:id="2e4a1386-8ee2-4090-b243-5e3dc7d5f609" config-ref="HTTP_Listener_config" path="/request" allowedMethods="GET"/>
@@ -30,13 +31,27 @@ ns ns0 http://webserviceexample.webservice.com/
 ---
 {
 	ns0#registrar: {
-		arg0: attributes.queryParams as Number,
-		arg1: attributes.queryParams as String
+		arg0: attributes.queryParams.arg0 as Number,
+		arg1: attributes.queryParams.arg1 as String
 	}
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<wsc:consume operation="registrar" doc:name="Consume" doc:id="fba1354f-21ce-40c7-9c2b-ecbebca3bb2a" config-ref="Web_Service_Consumer_Config1"/>
+		<ee:transform doc:name="Transform Message" doc:id="7818c0e3-153c-49f9-8ca9-02421e71cf78" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+ns ns0 http://webserviceexample.webservice.com/
+---
+payload.body.ns0#registrarResponse.return as String]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="6053e5d2-d5b5-45e4-a731-a86d57cbb11d" message="Monto #[message:payload]"/>
+		<java:invoke-static method="getInformation(java.lang.String)" doc:name="Invoke static" doc:id="0c9911c1-d339-45f7-9ced-4a15ff4226b6" class="muleesbproject.ValidacionMonto">
+			<java:args ><![CDATA[#[monto:payload]]]></java:args>
+		</java:invoke-static>
+	
 
 	</flow>
 </mule>
