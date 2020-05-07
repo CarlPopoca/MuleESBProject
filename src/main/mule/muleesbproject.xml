@@ -18,6 +18,9 @@ http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/jav
 	<wsc:config name="Web_Service_Consumer_Config1" doc:name="Web Service Consumer Config" doc:id="facae9c0-07b1-4f25-843a-17e6fe995329" >
 		<wsc:connection wsdlLocation="http://localhost:8069/mockpaqueteImplPortBinding?wsdl" service="paqueteImplService" port="paqueteImplPort" address="http://localhost:8069/mockpaqueteImplPortBinding" soapVersion="SOAP12"/>
 	</wsc:config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="0c67bf9d-5005-43e3-b9d3-2113fc4149f8" basePath="/getInformation" >
+		<http:request-connection host="localhost" port="8067" />
+	</http:request-config>
 	<flow name="muleesbprojectFlow1" doc:id="c7577b11-c62a-4dd4-8360-bbc2aa04f129" >
 		<http:listener doc:name="HTTP" doc:id="2e4a1386-8ee2-4090-b243-5e3dc7d5f609" config-ref="HTTP_Listener_config" path="/request" allowedMethods="GET"/>
 		
@@ -51,6 +54,14 @@ payload.body.ns0#registrarResponse.return as String]]></ee:set-payload>
 		<java:invoke-static method="getInformation(java.lang.String)" doc:name="Invoke static" doc:id="0c9911c1-d339-45f7-9ced-4a15ff4226b6" class="muleesbproject.ValidacionMonto">
 			<java:args ><![CDATA[#[monto:payload]]]></java:args>
 		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="f7df3ec9-d872-46f0-b8e6-40441f446bb4" message="Dato enviado al servicio REST #[payload]" />
+		<http:request method="POST" doc:name="Request" doc:id="af6cb495-93be-4b43-b913-a9e948af074d" config-ref="HTTP_Request_configuration" path="Success">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"data" : payload
+}]]]></http:query-params>
+		</http:request>
 	
 
 	</flow>
